@@ -1,6 +1,6 @@
-# MALAPOP - Szechuan Peppercorn Popcorn
+# MALAPOP - Sichuan Peppercorn Popcorn
 
-NYC-based Szechuan peppercorn popcorn brand. This is the marketing site with Shopify merch integration.
+NYC-based Sichuan peppercorn popcorn brand. This is the marketing site with Shopify merch integration.
 
 ## Local Development
 
