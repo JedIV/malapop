@@ -11,7 +11,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
+<body class="intro-active">
+
+  <!-- PSYCHEDELIC INTRO -->
+  <div class="intro-overlay" id="intro-overlay">
+    <canvas id="psyche-canvas"></canvas>
+    <div class="intro-clouds">
+      <img src="assets/images/logo - yellow_red.png" alt="" class="intro-cloud ic-1">
+      <img src="assets/images/logo - red_yellow.png" alt="" class="intro-cloud ic-2">
+      <img src="assets/images/logo - yellow_red.png" alt="" class="intro-cloud ic-3">
+      <img src="assets/images/logo - red_yellow.png" alt="" class="intro-cloud ic-4">
+      <img src="assets/images/logo - yellow_red.png" alt="" class="intro-cloud ic-5">
+      <img src="assets/images/logo - red_yellow.png" alt="" class="intro-cloud ic-6">
+    </div>
+    <div class="intro-center">
+      <div class="intro-video-wrap">
+        <video class="intro-video" id="intro-video" muted playsinline preload="auto">
+          <source src="assets/malapop-reveal.mp4" type="video/mp4">
+        </video>
+      </div>
+      <img src="assets/images/malapoplogo.png" alt="MALAPOP" class="intro-wordmark" id="intro-wordmark">
+    </div>
+    <div class="intro-enter" id="intro-enter">
+      <button class="btn-enter" id="btn-enter">Enter the Tingle</button>
+    </div>
+  </div>
 
   <!-- NAV -->
   <nav class="nav" id="nav">
