@@ -13,26 +13,21 @@
 
   let W, H;
   let mouse = { x: -9999, y: -9999 };
-  const POP_RADIUS = 80;       // how close the cursor needs to be
-  const KERNEL_COUNT = 60;
+  const POP_RADIUS = 100;      // how close the cursor needs to be
+  const KERNEL_COUNT = 80;
   const kernels = [];
 
   function resize() {
     W = canvas.width = window.innerWidth;
-    H = canvas.height = document.documentElement.scrollHeight;
+    H = canvas.height = window.innerHeight;
   }
   resize();
   window.addEventListener('resize', resize);
 
-  // Track mouse in page coordinates
+  // Track mouse in viewport coordinates (canvas is fixed)
   window.addEventListener('mousemove', (e) => {
-    mouse.x = e.pageX;
-    mouse.y = e.pageY;
-  }, { passive: true });
-
-  // Also react to scroll (mouse stays in viewport coords)
-  window.addEventListener('scroll', () => {
-    // mouse.y is already pageY, no adjustment needed
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   }, { passive: true });
 
   // ---- Draw helpers ----
@@ -62,8 +57,8 @@
     ctx.translate(x, y);
     ctx.globalAlpha = alpha;
     ctx.strokeStyle = '#E9A825';
-    ctx.lineWidth = 1.2;
-    ctx.fillStyle = 'rgba(233, 168, 37, 0.08)';
+    ctx.lineWidth = 1.8;
+    ctx.fillStyle = 'rgba(233, 168, 37, 0.12)';
 
     const s = size * 0.8;
 
@@ -103,15 +98,15 @@
     return {
       x: Math.random() * W,
       y: Math.random() * H,
-      size: 4 + Math.random() * 5,
-      baseAlpha: 0.12 + Math.random() * 0.12,  // muted
+      size: 5 + Math.random() * 6,
+      baseAlpha: 0.25 + Math.random() * 0.15,  // visible but still muted
       rotation: Math.random() * Math.PI * 2,
-      driftX: (Math.random() - 0.5) * 0.15,
-      driftY: -0.05 - Math.random() * 0.1,
-      rotSpeed: (Math.random() - 0.5) * 0.005,
+      driftX: (Math.random() - 0.5) * 0.2,
+      driftY: (Math.random() - 0.5) * 0.15,
+      rotSpeed: (Math.random() - 0.5) * 0.008,
       pop: 0,           // 0 = kernel, 1 = fully popped cloud
       popTarget: 0,
-      popSize: 12 + Math.random() * 8,  // cloud size when popped
+      popSize: 22 + Math.random() * 14,  // cloud size when popped
       wobble: Math.random() * Math.PI * 2,
     };
   }
@@ -123,25 +118,20 @@
   // ---- Animation loop ----
 
   function animate() {
-    // Resize canvas to page height each frame (cheap check)
-    const pageH = document.documentElement.scrollHeight;
-    if (canvas.height !== pageH) {
-      H = canvas.height = pageH;
-    }
-
     ctx.clearRect(0, 0, W, H);
 
     for (const k of kernels) {
       // Gentle drift
       k.wobble += 0.015;
-      k.x += k.driftX + Math.sin(k.wobble) * 0.08;
-      k.y += k.driftY;
+      k.x += k.driftX + Math.sin(k.wobble) * 0.1;
+      k.y += k.driftY + Math.cos(k.wobble * 0.7) * 0.08;
       k.rotation += k.rotSpeed;
 
-      // Wrap around
-      if (k.y < -20) { k.y = H + 20; k.x = Math.random() * W; }
-      if (k.x < -20) k.x = W + 20;
-      if (k.x > W + 20) k.x = -20;
+      // Wrap around viewport
+      if (k.y < -30) k.y = H + 30;
+      if (k.y > H + 30) k.y = -30;
+      if (k.x < -30) k.x = W + 30;
+      if (k.x > W + 30) k.x = -30;
 
       // Distance to mouse (page coordinates)
       const dx = k.x - mouse.x;
@@ -160,13 +150,13 @@
         drawKernel(k.x, k.y, k.size, k.baseAlpha * (1 - k.pop * 0.5), k.rotation);
       } else if (k.pop > 0.7) {
         // Mostly cloud
-        drawCloud(k.x, k.y, k.popSize * k.pop, k.baseAlpha * 1.5 * k.pop);
+        drawCloud(k.x, k.y, k.popSize * k.pop, k.baseAlpha * 2 * k.pop);
       } else {
         // Transition: scale up kernel, fade
         const t = (k.pop - 0.3) / 0.4;
         const scale = 1 + t * 1.5;
         drawKernel(k.x, k.y, k.size * scale, k.baseAlpha * (1 - t) * 0.7, k.rotation);
-        drawCloud(k.x, k.y, k.popSize * t, k.baseAlpha * t * 1.2);
+        drawCloud(k.x, k.y, k.popSize * t, k.baseAlpha * t * 1.8);
       }
     }
 
